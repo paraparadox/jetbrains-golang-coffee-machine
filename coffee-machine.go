@@ -3,7 +3,10 @@ package main
 import "fmt"
 
 func main() {
-	determineNecessaryAmountOfIngredients()
+	waterMl, milkMl, coffeeBeansGr := askForAvailableAmountsOfIngredients()
+	requestedCupsCount := askNeededCupsCount()
+	availableCupsCount := calculateAvailableCupsCount(waterMl, milkMl, coffeeBeansGr)
+	respondToUser(requestedCupsCount, availableCupsCount)
 }
 
 func makingCoffeeProcess() {
@@ -27,9 +30,19 @@ func determineNecessaryAmountOfIngredients() {
 func askNeededCupsCount() int {
 	var cupsCount int
 	fmt.Println("Write how many cups of coffee you will need:")
-	fmt.Print("> ")
 	fmt.Scan(&cupsCount)
 	return cupsCount
+}
+
+func askForAvailableAmountsOfIngredients() (int, int, int) {
+	var water, milk, coffeeBeans int
+	fmt.Println("Write how many ml of water the coffee machine has:")
+	fmt.Scan(&water)
+	fmt.Println("Write how many ml of milk the coffee machine has:")
+	fmt.Scan(&milk)
+	fmt.Println("Write how many grams of coffee beans the coffee machine has:")
+	fmt.Scan(&coffeeBeans)
+	return water, milk, coffeeBeans
 }
 
 func calculateRequiredAmountOfWater(cupsCount int) int {
@@ -45,4 +58,42 @@ func calculateRequiredAmountOfMilk(cupsCount int) int {
 func calculateRequiredAmountOfCoffeeBeans(cupsCount int) int {
 	const coffeeGrPerCup = 15
 	return cupsCount * coffeeGrPerCup
+}
+
+func calculateAvailableCupsCount(waterMl, milkMl, coffeeBeansGr int) int {
+	const waterMlPerCup = 200
+	const milkMlPerCup = 50
+	const coffeeGrPerCup = 15
+	availableWaterCups := waterMl / waterMlPerCup
+	availableMilkCups := milkMl / milkMlPerCup
+	availableCoffeCups := coffeeBeansGr / coffeeGrPerCup
+	return minOfThree(availableWaterCups, availableMilkCups, availableCoffeCups)
+}
+
+func minOfThree(a, b, c int) int {
+	if a < b {
+		if a < c {
+			return a
+		} else {
+			return c
+		}
+	} else {
+		if b < c {
+			return b
+		} else {
+			return c
+		}
+	}
+}
+
+func respondToUser(requestedCupsCount, availableCupsCount int) {
+	switch {
+	case requestedCupsCount == availableCupsCount:
+		fmt.Println("Yes, I can make that amount of coffee")
+	case requestedCupsCount > availableCupsCount:
+		fmt.Printf("No, I can make only %d cups of coffee\n", availableCupsCount)
+	case requestedCupsCount < availableCupsCount:
+		fmt.Print("Yes, I can make that amount of coffee ")
+		fmt.Printf("(and even %d more than that)\n", availableCupsCount - requestedCupsCount)
+	}
 }
