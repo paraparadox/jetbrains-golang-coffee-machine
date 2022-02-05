@@ -3,97 +3,102 @@ package main
 import "fmt"
 
 func main() {
-	waterMl, milkMl, coffeeBeansGr := askForAvailableAmountsOfIngredients()
-	requestedCupsCount := askNeededCupsCount()
-	availableCupsCount := calculateAvailableCupsCount(waterMl, milkMl, coffeeBeansGr)
-	respondToUser(requestedCupsCount, availableCupsCount)
+	money := 550
+	water := 400
+	milk := 540
+	coffeeBeans := 120
+	disposableCups := 9
+
+	displaySupplies(water, milk, coffeeBeans, disposableCups, money)
+	fmt.Println()
+	action := askForAction()
+	processTheAction(action, &water, &milk, &coffeeBeans, &disposableCups, &money)
+	fmt.Println()
+	displaySupplies(water, milk, coffeeBeans, disposableCups, money)
 }
 
-func makingCoffeeProcess() {
-	fmt.Println("Starting to make a coffee")
-	fmt.Println("Grinding coffee beans")
-	fmt.Println("Boiling water")
-	fmt.Println("Mixing boiled water with crushed coffee beans")
-	fmt.Println("Pouring coffee into the cup")
-	fmt.Println("Pouring some milk into the cup")
-	fmt.Println("Coffee is ready!")
+func displaySupplies(water, milk, coffeeBeans, disposableCups, money int) {
+	fmt.Println("The coffee machine has:")
+	fmt.Println(water, "of water")
+	fmt.Println(milk, "of milk")
+	fmt.Println(coffeeBeans, "of coffee beans")
+	fmt.Println(disposableCups, "of disposable cups")
+	fmt.Println(money, "of money")
 }
 
-func determineNecessaryAmountOfIngredients() {
-	neededCupsCount := askNeededCupsCount()
-	fmt.Printf("For %d cups of coffee you will need:\n", neededCupsCount)
-	fmt.Printf("%d ml of water\n", calculateRequiredAmountOfWater(neededCupsCount))
-	fmt.Printf("%d ml of milk\n", calculateRequiredAmountOfMilk(neededCupsCount))
-	fmt.Printf("%d g of coffee beans\n", calculateRequiredAmountOfCoffeeBeans(neededCupsCount))
+func askForAction() string {
+	var action string
+	fmt.Print("Write action (buy, fill, take):\n> ")
+	fmt.Scan(&action)
+	return action
 }
 
-func askNeededCupsCount() int {
-	var cupsCount int
-	fmt.Println("Write how many cups of coffee you will need:")
-	fmt.Scan(&cupsCount)
-	return cupsCount
-}
-
-func askForAvailableAmountsOfIngredients() (int, int, int) {
-	var water, milk, coffeeBeans int
-	fmt.Println("Write how many ml of water the coffee machine has:")
-	fmt.Scan(&water)
-	fmt.Println("Write how many ml of milk the coffee machine has:")
-	fmt.Scan(&milk)
-	fmt.Println("Write how many grams of coffee beans the coffee machine has:")
-	fmt.Scan(&coffeeBeans)
-	return water, milk, coffeeBeans
-}
-
-func calculateRequiredAmountOfWater(cupsCount int) int {
-	const waterMlPerCup = 200
-	return cupsCount * waterMlPerCup
-}
-
-func calculateRequiredAmountOfMilk(cupsCount int) int {
-	const milkMlPerCup = 50
-	return cupsCount * milkMlPerCup
-}
-
-func calculateRequiredAmountOfCoffeeBeans(cupsCount int) int {
-	const coffeeGrPerCup = 15
-	return cupsCount * coffeeGrPerCup
-}
-
-func calculateAvailableCupsCount(waterMl, milkMl, coffeeBeansGr int) int {
-	const waterMlPerCup = 200
-	const milkMlPerCup = 50
-	const coffeeGrPerCup = 15
-	availableWaterCups := waterMl / waterMlPerCup
-	availableMilkCups := milkMl / milkMlPerCup
-	availableCoffeCups := coffeeBeansGr / coffeeGrPerCup
-	return minOfThree(availableWaterCups, availableMilkCups, availableCoffeCups)
-}
-
-func minOfThree(a, b, c int) int {
-	if a < b {
-		if a < c {
-			return a
-		} else {
-			return c
-		}
-	} else {
-		if b < c {
-			return b
-		} else {
-			return c
-		}
+func processTheAction(action string, water, milk, coffeeBeans, disposableCups, money *int) {
+	switch action {
+	case "buy":
+		processTheBuyAction(water, milk, coffeeBeans, disposableCups, money)
+	case "fill":
+		processTheFillAction(water, milk, coffeeBeans, disposableCups, money)
+	case "take":
+		processTheTakeAction(water, milk, coffeeBeans, disposableCups, money)
 	}
 }
 
-func respondToUser(requestedCupsCount, availableCupsCount int) {
-	switch {
-	case requestedCupsCount == availableCupsCount:
-		fmt.Println("Yes, I can make that amount of coffee")
-	case requestedCupsCount > availableCupsCount:
-		fmt.Printf("No, I can make only %d cups of coffee\n", availableCupsCount)
-	case requestedCupsCount < availableCupsCount:
-		fmt.Print("Yes, I can make that amount of coffee ")
-		fmt.Printf("(and even %d more than that)\n", availableCupsCount - requestedCupsCount)
+func processTheBuyAction(water, milk, coffeeBeans, disposableCups, money *int) {
+	var coffeeType int
+	fmt.Print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:\n> ")
+	fmt.Scan(&coffeeType)
+	switch coffeeType {
+	case 1:
+		sellEspresso(water, milk, coffeeBeans, money)
+	case 2:
+		sellLatte(water, milk, coffeeBeans, money)
+	case 3:
+		sellCappuccino(water, milk, coffeeBeans, money)
 	}
+	*disposableCups -= 1
+}
+
+func sellEspresso(water, milk, coffeeBeans, money *int) {
+	waterPerCup := 250
+	milkPerCup := 0
+	coffeePerCup := 16
+	pricePerCup := 4
+
+	*water -= waterPerCup
+	*milk -= milkPerCup
+	*coffeeBeans -= coffeePerCup
+	*money += pricePerCup
+}
+
+func sellLatte(water, milk, coffeeBeans, money *int) {
+	waterPerCup := 350
+	milkPerCup := 75
+	coffeePerCup := 20
+	pricePerCup := 7
+
+	*water -= waterPerCup
+	*milk -= milkPerCup
+	*coffeeBeans -= coffeePerCup
+	*money += pricePerCup
+}
+
+func sellCappuccino(water, milk, coffeeBeans, money *int) {
+	waterPerCup := 200
+	milkPerCup := 100
+	coffeePerCup := 12
+	pricePerCup := 6
+
+	*water -= waterPerCup
+	*milk -= milkPerCup
+	*coffeeBeans -= coffeePerCup
+	*money += pricePerCup
+}
+
+func processTheFillAction(water, milk, coffeeBeans, disposableCups, money *int) {
+
+}
+
+func processTheTakeAction(water, milk, coffeeBeans, disposableCups, money *int) {
+
 }
