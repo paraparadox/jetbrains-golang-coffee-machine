@@ -46,53 +46,46 @@ func processTheAction(action string, water, milk, coffeeBeans, disposableCups, m
 
 func processTheBuyAction(water, milk, coffeeBeans, disposableCups, money *int) {
 	var coffeeType int
-	fmt.Print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:\n> ")
+	var consumableWater, consumableMilk, consumableCoffee, profit int
+		fmt.Print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:\n> ")
 	fmt.Scan(&coffeeType)
 	switch coffeeType {
 	case 1:
-		sellEspresso(water, milk, coffeeBeans, money)
+		consumableWater, consumableMilk, consumableCoffee, profit = sellEspresso()
 	case 2:
-		sellLatte(water, milk, coffeeBeans, money)
+		consumableWater, consumableMilk, consumableCoffee, profit = sellLatte()
 	case 3:
-		sellCappuccino(water, milk, coffeeBeans, money)
+		consumableWater, consumableMilk, consumableCoffee, profit = sellCappuccino()
 	}
+	*water -= consumableWater
+	*milk -= consumableMilk
+	*coffeeBeans -= consumableCoffee
 	*disposableCups -= 1
+	*money += profit
 }
 
-func sellEspresso(water, milk, coffeeBeans, money *int) {
-	waterPerCup := 250
-	milkPerCup := 0
-	coffeePerCup := 16
-	pricePerCup := 4
-
-	*water -= waterPerCup
-	*milk -= milkPerCup
-	*coffeeBeans -= coffeePerCup
-	*money += pricePerCup
+func sellEspresso() (waterPerCup, milkPerCup, coffeePerCup, pricePerCup int) {
+	waterPerCup = 250
+	milkPerCup = 0
+	coffeePerCup = 16
+	pricePerCup = 4
+	return
 }
 
-func sellLatte(water, milk, coffeeBeans, money *int) {
-	waterPerCup := 350
-	milkPerCup := 75
-	coffeePerCup := 20
-	pricePerCup := 7
-
-	*water -= waterPerCup
-	*milk -= milkPerCup
-	*coffeeBeans -= coffeePerCup
-	*money += pricePerCup
+func sellLatte() (waterPerCup, milkPerCup, coffeePerCup, pricePerCup int) {
+	waterPerCup = 350
+	milkPerCup = 75
+	coffeePerCup = 20
+	pricePerCup = 7
+	return
 }
 
-func sellCappuccino(water, milk, coffeeBeans, money *int) {
-	waterPerCup := 200
-	milkPerCup := 100
-	coffeePerCup := 12
-	pricePerCup := 6
-
-	*water -= waterPerCup
-	*milk -= milkPerCup
-	*coffeeBeans -= coffeePerCup
-	*money += pricePerCup
+func sellCappuccino() (waterPerCup, milkPerCup, coffeePerCup, pricePerCup int) {
+	waterPerCup = 200
+	milkPerCup = 100
+	coffeePerCup = 12
+	pricePerCup = 6
+	return
 }
 
 func processTheFillAction(water, milk, coffeeBeans, disposableCups, money *int) {
