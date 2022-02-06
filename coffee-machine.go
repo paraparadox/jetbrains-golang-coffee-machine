@@ -9,15 +9,16 @@ func main() {
 	coffeeBeans := 120
 	disposableCups := 9
 
-	displaySupplies(water, milk, coffeeBeans, disposableCups, money)
-	fmt.Println()
-	action := askForAction()
-	processTheAction(action, &water, &milk, &coffeeBeans, &disposableCups, &money)
-	fmt.Println()
-	displaySupplies(water, milk, coffeeBeans, disposableCups, money)
+	var action string
+	for action != "exit" {
+		action = askForAction()
+		processTheAction(action, &water, &milk, &coffeeBeans, &disposableCups, &money)
+		fmt.Println()
+	}
 }
 
 func displaySupplies(water, milk, coffeeBeans, disposableCups, money int) {
+	fmt.Println()
 	fmt.Println("The coffee machine has:")
 	fmt.Println(water, "of water")
 	fmt.Println(milk, "of milk")
@@ -28,7 +29,7 @@ func displaySupplies(water, milk, coffeeBeans, disposableCups, money int) {
 
 func askForAction() string {
 	var action string
-	fmt.Print("Write action (buy, fill, take):\n> ")
+	fmt.Print("Write action (buy, fill, take, remaining, exit):\n> ")
 	fmt.Scan(&action)
 	return action
 }
@@ -41,22 +42,43 @@ func processTheAction(action string, water, milk, coffeeBeans, disposableCups, m
 		processTheFillAction(water, milk, coffeeBeans, disposableCups)
 	case "take":
 		processTheTakeAction(money)
+	case "remaining":
+		displaySupplies(*water, *milk, *coffeeBeans, *disposableCups, *money)
 	}
 }
 
 func processTheBuyAction(water, milk, coffeeBeans, disposableCups, money *int) {
-	var coffeeType int
+	var coffeeType string
 	var consumableWater, consumableMilk, consumableCoffee, profit int
-		fmt.Print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:\n> ")
+		fmt.Print("\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:\n> ")
 	fmt.Scan(&coffeeType)
 	switch coffeeType {
-	case 1:
+	case "1":
 		consumableWater, consumableMilk, consumableCoffee, profit = sellEspresso()
-	case 2:
+	case "2":
 		consumableWater, consumableMilk, consumableCoffee, profit = sellLatte()
-	case 3:
+	case "3":
 		consumableWater, consumableMilk, consumableCoffee, profit = sellCappuccino()
+	case "back":
+		return
 	}
+
+	switch {
+	case *water < consumableWater:
+		fmt.Println("Sorry, not enough water!")
+		return
+	case *milk < consumableMilk:
+		fmt.Println("Sorry, not enough milk!")
+		return
+	case *coffeeBeans < consumableCoffee:
+		fmt.Println("Sorry, not enough coffee beans!")
+		return
+	case *disposableCups == 0:
+		fmt.Println("Sorry, not enough disposable cups!")
+		return
+	}
+
+	fmt.Println("I have enough resources, making you a coffee!")
 	*water -= consumableWater
 	*milk -= consumableMilk
 	*coffeeBeans -= consumableCoffee
@@ -89,6 +111,7 @@ func sellCappuccino() (waterPerCup, milkPerCup, coffeePerCup, pricePerCup int) {
 }
 
 func processTheFillAction(water, milk, coffeeBeans, disposableCups *int) {
+	fmt.Println()
 	incomingWater := takeWater()
 	incomingMilk := takeMilk()
 	incomingCoffee := takeCoffee()
@@ -125,6 +148,6 @@ func takeDisposableCups() (cups int) {
 }
 
 func processTheTakeAction(money *int) {
-	fmt.Printf("I gave you $%d\n", *money)
+	fmt.Printf("\nI gave you $%d\n", *money)
 	*money = 0
 }
