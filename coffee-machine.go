@@ -40,7 +40,7 @@ func processTheAction(action string, water, milk, coffeeBeans, disposableCups, m
 	case "fill":
 		processTheFillAction(water, milk, coffeeBeans, disposableCups)
 	case "take":
-		processTheTakeAction(water, milk, coffeeBeans, disposableCups, money)
+		processTheTakeAction(money)
 	}
 }
 
@@ -124,6 +124,7 @@ func takeDisposableCups() (cups int) {
 	return
 }
 
-func processTheTakeAction(water, milk, coffeeBeans, disposableCups, money *int) {
-
+func processTheTakeAction(money *int) {
+	fmt.Printf("I gave you $%d\n", *money)
+	*money = 0
 }
