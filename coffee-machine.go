@@ -38,7 +38,7 @@ func processTheAction(action string, water, milk, coffeeBeans, disposableCups, m
 	case "buy":
 		processTheBuyAction(water, milk, coffeeBeans, disposableCups, money)
 	case "fill":
-		processTheFillAction(water, milk, coffeeBeans, disposableCups, money)
+		processTheFillAction(water, milk, coffeeBeans, disposableCups)
 	case "take":
 		processTheTakeAction(water, milk, coffeeBeans, disposableCups, money)
 	}
@@ -88,8 +88,40 @@ func sellCappuccino() (waterPerCup, milkPerCup, coffeePerCup, pricePerCup int) {
 	return
 }
 
-func processTheFillAction(water, milk, coffeeBeans, disposableCups, money *int) {
+func processTheFillAction(water, milk, coffeeBeans, disposableCups *int) {
+	incomingWater := takeWater()
+	incomingMilk := takeMilk()
+	incomingCoffee := takeCoffee()
+	incomingCups := takeDisposableCups()
 
+	*water += incomingWater
+	*milk += incomingMilk
+	*coffeeBeans += incomingCoffee
+	*disposableCups += incomingCups
+}
+
+func takeWater() (water int) {
+	fmt.Print("Write how many ml of water you want to add:\n> ");
+	fmt.Scan(&water)
+	return
+}
+
+func takeMilk() (milk int) {
+	fmt.Print("Write how many ml of milk you want to add:\n> ");
+	fmt.Scan(&milk)
+	return
+}
+
+func takeCoffee() (coffee int) {
+	fmt.Print("Write how many grams of coffee beans you want to add:\n> ");
+	fmt.Scan(&coffee)
+	return
+}
+
+func takeDisposableCups() (cups int) {
+	fmt.Print("Write how many disposable coffee cups you want to add:\n> ");
+	fmt.Scan(&cups)
+	return
 }
 
 func processTheTakeAction(water, milk, coffeeBeans, disposableCups, money *int) {
